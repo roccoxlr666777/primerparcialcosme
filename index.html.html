@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen Avanzado de Bioética en Cosmetología</title>
+    <!-- Librería para generar la imagen -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #eef2f9;
+            box-sizing: border-box;
+            overflow: auto;
+        }
+
+        .main-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #1a2b4b;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        #student-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            justify-content: center;
+        }
+
+        #student-info input {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        #exam-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            width: 98%;
+        }
+
+        .question-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease-in-out;
+            min-height: 300px;
+        }
+
+        .question-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .question-header {
+            font-weight: 600;
+            color: #005f73;
+            font-size: 1em;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 0.9em;
+            text-align: center;
+            margin-bottom: 12px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .option {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.8em;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .option:hover {
+            background-color: #e9ecef;
+        }
+
+        .option.valid {
+            background-color: #28a745 !important;
+            color: white;
+            border-color: #1e7e34;
+        }
+
+        .option.invalid {
+            background-color: #dc3545 !important;
+            color: white;
+            border-color: #bd2130;
+        }
+        
+        #finish-btn {
+            margin-top: 30px;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        #finish-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* --- Estilos para la ventana emergente (Modal) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        #result-image {
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .modal-instructions {
+            margin: 15px 0;
+            font-size: 0.9em;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #whatsapp-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #25D366;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        #whatsapp-link:hover {
+            background-color: #1DA851;
+        }
+
+        /* --- Tarjeta de resultados (invisible, solo para generar la imagen) --- */
+        #results-card {
+            position: absolute;
+            left: -9999px; /* Moverla fuera de la pantalla */
+            width: 350px;
+            padding: 15px;
+            background: white;
+            border: 1px solid #005f73;
+            border-radius: 10px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        #results-card h2 { color: #1a2b4b; text-align: center; }
+        #results-card p { margin: 5px 0; font-size: 14px; }
+        #results-card .score { font-size: 24px; font-weight: 700; color: #007bff; text-align: center; margin-top: 10px;}
+
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <h1>Examen Interactivo: Dilemas Bioéticos en Cosmetología</h1>
+    
+    <div id="student-info">
+        <input type="text" id="nombre" placeholder="Nombre Completo">
+        <input type="text" id="licenciatura" placeholder="Licenciatura">
+        <input type="text" id="grupo" placeholder="Grado y Grupo">
+        <input type="text" id="materia" placeholder="Materia">
+    </div>
+
+    <div id="exam-container">
+         <!-- Las 10 preguntas van aquí (sin cambios) -->
+        <div class="question-card">
+            <div class="question-header">1. ¿Qué es lo más justo?</div>
+            <p class="question-text">Una clienta de bajos recursos con una cicatriz visible y una celebridad millonaria solicitan un tratamiento nuevo y exclusivo. ¿Cuál es una decisión justa?</p>
+            <div class="options">
+                <div class="option" data-validity="valid">A) Ofrecer el mismo precio exacto a las dos clientas.</div>
+                <div class="option" data-validity="valid">B) Dar facilidades de pago a la primera clienta para asegurar su acceso.</div>
+                <div class="option" data-validity="invalid">C) Ignorar a ambas y regalar el tratamiento a un amigo que no lo necesita.</div>
+                <div class="option" data-validity="valid">D) Atender a la celebridad, pues la publicidad beneficiará al negocio y a futuros clientes.</div>
+            </div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">2. ¿Qué es lo más correcto?</div>
+            <p class="question-text">Aprendes una técnica novedosa de un "gurú" extranjero sin certificación oficial en México. La técnica no viola ninguna ley. ¿Cuál es una reflexión bioética correcta?</p>
+            <div class="options">
+                <div class="option" data-validity="valid">A) Es aceptable aplicarla, pues no hay una ley que lo prohíba.</div>
+                <div class="option" data-validity="invalid">B) Rechazarla, porque todas las técnicas que vienen del extranjero son inferiores.</div>
+                <div class="option" data-validity="valid">C) Se debe tener precaución, pues carece de un respaldo oficial que garantice su seguridad.</div>
+                <div class="option" data-validity="valid">D) Se debe informar al cliente que la técnica no tiene aval oficial para que decida con claridad.</div>
+            </div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">3. ¿Cómo distribuir un recurso?</div>
+            <p class="question-text">Llega una nueva máquina con solo 3 citas disponibles al día. Tienes 3 clientes esperando: uno que llegó primero, uno que pagaría el doble, y uno con una condición médica que realmente lo necesita. ¿Qué decisión es bioéticamente válida?</p>
+            <div class="options">
+                <div class="option" data-validity="invalid">A) No usar la máquina hasta que todos puedan acceder a ella algún día.</div>
+                <div class="option" data-validity="valid">B) Atender al que llegó primero para respetar el orden.</div>
+                <div class="option" data-validity="valid">C) Atender al que tiene la necesidad médica, pues el beneficio es mayor.</div>
+                <div class="option" data-validity="valid">D) Atender al que paga más, pues asegura la rentabilidad del equipo.</div>
+            </div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">4. ¿Qué decisión tomar?</div>
+            <p class="question-text">Una clienta adulta te pide un diseño de uñas extremadamente largo y extravagante que, en tu experiencia, podría dificultarle conseguir un empleo en su profesión (abogada). ¿Qué haces?</p>
+            <div class="options">
+                <div class="option" data-validity="valid">A) Respetar su decisión informada y realizar el mejor trabajo posible.</div>
+                <div class="option" data-validity="valid">B) Aconsejarle sobre el posible impacto y preguntarle si lo ha considerado.</div>
+                <div class="option" data-validity="valid">C) Pedirle que firme un documento donde reconoce que fue advertida de las posibles consecuencias.</div>
+                <div class="option" data-validity="invalid">D) Darle una charla sobre cómo las "modas pasajeras" arruinan la imagen profesional.</div>
+            </div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">5. ¿Qué es lo más prudente?</div>
+            <p class="question-text">Un cliente te confiesa tener una infección de piel contagiosa y te dice que después de la cita irá a una alberca pública. ¿Cuál es tu deber?</p>
+            <div class="options">
+                <div class="option" data-validity="valid">A) Negarte a darle el servicio para no ser cómplice de su posible negligencia.</div>
+                <div class="option" data-validity="invalid">B) Publicar su foto en redes sociales para alertar a la comunidad.</div>
+                <div class="option" data-validity="valid">C) Mantener la confidencialidad de su diagnóstico, pues es un secreto profesional.</div>
+                <div class="option" data-validity="valid">D) Aconsejarle enérgicamente no ir y explicarle el riesgo para la salud pública.</div>
+            </div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">6. ¿A qué se debe obedecer?</div>
+            <p class="question-text">En tu comunidad, se considera "inmoral" que los hombres usen maquillaje. Un cliente te pide un maquillaje correctivo para una entrevista. ¿Qué guía tu acción?</p>
+            <div class="options">
+                <div class="option" data-validity="valid">A) Tu deber de ayudar al cliente a sentirse seguro y alcanzar su objetivo.</div>
+                <div class="option" data-validity="valid">B) Negarte amablemente, explicando que la reputación del negocio es crucial en la comunidad.</div>
+                <div class="option" data-validity="invalid">C) Aconsejarle que cancele la entrevista para no ofender a nadie.</div>
+                <div class="option" data-validity="valid">D) Atenderlo con discreción para respetar su privacidad y no desafiar las normas locales.</div>
+            </div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">7. ¿Qué es la Bioética?</div>
+            <p class="question-text">¿Cuál es la mejor definición de Bioética en el contexto de la cosmetología?</p>
+            <div class="options">
+                <div class="option" data-validity="valid">A) El conjunto de normas y valores que guían la práctica de los profesionales de la salud y la estética.</div>
+                <div class="option" data-validity="invalid">B) Un sinónimo de la biología y la ética, estudiadas por separado.</div>
+                <div class="option" data-validity="invalid">C) Las leyes exactas que prohíben ciertos procedimientos estéticos.</div>
+                <div class="option" data-validity="invalid">D) La opinión personal de cada cosmetólogo sobre lo que está bien o mal.</div>
+            </div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">8. Voluntad y Consentimiento</div>
+            <p class="question-text">Una clienta, antes de un accidente, le dijo a su amiga: "jamás me pondría relleno en los labios". Ahora está inconsciente y su esposo pide que se los pongan. ¿Qué se debe respetar?</p>
+            <div class="options">
+                <div class="option" data-validity="invalid">A) El consentimiento del esposo, pues es su familiar directo.</div>
+                <div class="option" data-validity="invalid">B) La opinión de la cosmetóloga, que cree que se le verían bien.</div>
+                <div class="option" data-validity="valid">C) La voluntad interna de la clienta, expresada previamente a su amiga.</div>
+                <div class="option" data-validity="invalid">D) La decisión que tome la amiga, ya que ella fue quien escuchó el deseo.</div>
+            </div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">9. Consentimiento Válido</div>
+            <p class="question-text">Para que un consentimiento sea éticamente válido, no basta con la firma. ¿Qué es lo más importante?</p>
+            <div class="options">
+                <div class="option" data-validity="invalid">A) Que el documento esté firmado con tinta azul y ante dos testigos.</div>
+                <div class="option" data-validity="valid">B) Que el profesional haya explicado verbalmente y por escrito los riesgos, beneficios y alternativas.</div>
+                <div class="option" data-validity="invalid">C) Que el cliente simplemente diga "sí, acepto" antes de empezar.</div>
+                <div class="option" data-validity="invalid">D) Que el pago del procedimiento se haya realizado por adelantado.</div>
+            </div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">10. Caso Abierto</div>
+            <p class="question-text">Una clienta con dismorfia corporal (se ve defectos que no existen) pide procedimientos cada vez más invasivos. ¿Cuál es una acción bioética válida?</p>
+            <div class="options">
+                <div class="option" data-validity="valid">A) Continuar con procedimientos menores, respetando su autonomía pero evitando los más riesgosos.</div>
+                <div class="option" data-validity="invalid">B) Poner un letrero en la entrada que diga "No se atiende a personas con problemas de percepción".</div>
+                <div class="option" data-validity="valid">C) Negarse a realizar más procedimientos y, con empatía, sugerirle buscar apoyo psicológico.</div>
+                <div class="option" data-validity="valid">D) Referirla con un colega especializado para una evaluación conjunta.</div>
+            </div>
+        </div>
+    </div>
+    
+    <button id="finish-btn">Finalizar y Ver Calificación</button>
+    
+    <!-- Ventana emergente (Modal) -->
+    <div id="results-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <img id="result-image" src="" alt="Tarjeta de Calificación">
+            <p class="modal-instructions">
+                <b>Paso 1:</b> Mantén presionada la imagen de arriba para <b>Guardarla</b> en tu dispositivo.<br><br>
+                <b>Paso 2:</b> Haz clic en el botón de abajo para abrir WhatsApp y enviar el texto. <b>No olvides adjuntar la imagen que guardaste</b> como comprobante.
+            </p>
+            <a id="whatsapp-link" href="#" target="_blank">Enviar Resultados por WhatsApp</a>
+        </div>
+    </div>
+</div>
+
+<!-- Tarjeta de resultados (invisible, solo para generar la imagen) -->
+<div id="results-card">
+    <h2>Resultado de Examen</h2>
+    <p><b>Materia:</b> <span id="card-materia"></span></p>
+    <p><b>Nombre:</b> <span id="card-nombre"></span></p>
+    <p><b>Licenciatura:</b> <span id="card-lic"></span></p>
+    <p><b>Grupo:</b> <span id="card-grupo"></span></p>
+    <div class="score">
+        Calificación: <span id="card-score"></span>
+    </div>
+    <p><b>Tiempo Empleado:</b> <span id="card-time"></span></p>
+    <p><b>Fecha y Hora:</b> <span id="card-timestamp"></span></p>
+</div>
+
+<script>
+    const startTime = new Date(); // Inicia el cronómetro
+    let score = 0;
+    const totalQuestions = 10;
+    let answeredQuestions = 0;
+
+    document.querySelectorAll('.options').forEach(optionsContainer => {
+        optionsContainer.addEventListener('click', function(event) {
+            if (event.target.classList.contains('option')) {
+                if (this.classList.contains('answered')) return;
+                this.classList.add('answered');
+                answeredQuestions++;
+
+                const selectedOption = event.target;
+                
+                if (selectedOption.getAttribute('data-validity') === 'valid') {
+                    score++;
+                }
+
+                this.querySelectorAll('.option').forEach(opt => {
+                    if (opt.getAttribute('data-validity') === 'valid') {
+                         opt.classList.add('valid');
+                    } else {
+                         opt.classList.add('invalid');
+                    }
+                });
+            }
+        });
+    });
+
+    const modal = document.getElementById('results-modal');
+    const closeModal = document.querySelector('.close-btn');
+
+    closeModal.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    document.getElementById('finish-btn').addEventListener('click', function() {
+        if (answeredQuestions < totalQuestions) {
+            alert('Por favor, responde todas las preguntas antes de finalizar.');
+            return;
+        }
+
+        const studentName = document.getElementById('nombre').value || "No especificado";
+        const studentLic = document.getElementById('licenciatura').value || "No especificada";
+        const studentGroup = document.getElementById('grupo').value || "No especificado";
+        const studentMateria = document.getElementById('materia').value || "No especificada";
+        const finalScore = (score / totalQuestions) * 10;
+
+        // --- Captura de Fecha y Hora ---
+        const now = new Date();
+        const timestamp = now.toLocaleString('es-MX', { 
+            day: '2-digit', month: '2-digit', year: 'numeric', 
+            hour: '2-digit', minute: '2-digit', hour12: true 
+        });
+
+        // --- Cálculo del Tiempo Empleado ---
+        const endTime = new Date();
+        const timeDiff = endTime - startTime; // en milisegundos
+        const minutes = Math.floor(timeDiff / 60000);
+        const seconds = ((timeDiff % 60000) / 1000).toFixed(0);
+        const timeTakenString = `${minutes} min, ${seconds} seg`;
+
+        // Llenar la tarjeta de resultados invisible
+        document.getElementById('card-materia').textContent = studentMateria;
+        document.getElementById('card-nombre').textContent = studentName;
+        document.getElementById('card-lic').textContent = studentLic;
+        document.getElementById('card-grupo').textContent = studentGroup;
+        document.getElementById('card-score').textContent = `${finalScore.toFixed(1)} / 10.0`;
+        document.getElementById('card-time').textContent = timeTakenString;
+        document.getElementById('card-timestamp').textContent = timestamp;
+        
+        // Preparar el mensaje de WhatsApp
+        const phoneNumber = "522221158614";
+        const message = `*Resultado de Examen de Bioética*:\n\n*Nombre:* ${studentName}\n*Licenciatura:* ${studentLic}\n*Grado y Grupo:* ${studentGroup}\n*Materia:* ${studentMateria}\n\n*Calificación Obtenida:* ${finalScore.toFixed(1)} / 10.0\n*Tiempo Empleado:* ${timeTakenString}\n*Fecha y Hora:* ${timestamp}`;
+        const whatsappLink = document.getElementById('whatsapp-link');
+        whatsappLink.href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+        // Generar la imagen de la tarjeta y luego mostrar el modal
+        html2canvas(document.getElementById('results-card')).then(canvas => {
+            const imageDataUrl = canvas.toDataURL('image/png');
+            document.getElementById('result-image').src = imageDataUrl;
+            modal.style.display = "flex";
+        });
+
+        this.style.display = 'none';
+    });
+</script>
+
+</body>
+</html>
+
